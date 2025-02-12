@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
     public function signup(Request $request){
 
-        $validateUser = Validator::make($request->all,[
+        $validateUser = Validator::make($request->all(),[
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required'
@@ -23,7 +23,7 @@ class AuthController extends Controller
                 [
                 'status' => false,
                 'message' => 'Validation Error',
-                'errors' => $validateUser->errors()->all
+                'errors' => $validateUser->errors()->all()
             ], 401);
         }
 
@@ -41,7 +41,7 @@ class AuthController extends Controller
     }
 
     public function login(Request $request){
-        $validateUser = Validator::make($request->all,[
+        $validateUser = Validator::make($request->all(),[
             'email' => 'required|email',
             'password' => 'required'
         ]);
@@ -51,7 +51,7 @@ class AuthController extends Controller
                 [
                 'status' => false,
                 'message' => 'Validation Error',
-                'errors' => $validateUser->errors()->all
+                'errors' => $validateUser->errors()->all()
             ], 401);
         }
 
