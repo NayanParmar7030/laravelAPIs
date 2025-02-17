@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Validator;
 use App\Models\Post;
 class PostController extends Controller
 {
@@ -34,7 +34,7 @@ class PostController extends Controller
     {
         $validatePost = Validator::make($request->all(),[
             'title' => 'required',
-            'image' => 'required'|'image'|'mimes:jpeg,png,jpg'|'max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'description' => 'required'
         ]);
 
@@ -48,6 +48,7 @@ class PostController extends Controller
         }
 
         $img = $request->file('image');
+       
         $imgName = time().'.'.$img->extension();
         $img->move(public_path('images'),$imgName);
 
@@ -90,7 +91,43 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validatePost = Validator::make($request->all(),[
+            'title' => 'required',
+            'image' => 'required'|'image'|'mimes:jpeg,png,jpg'|'max:2048',
+            'description' => 'required'
+        ]);
+
+        if($validatePost->fails()){
+            return response()->json(
+                [
+                'status' => false,
+                'message' => 'Validation Error',
+                'errors' => $validatePost->errors()->all()
+            ], 401);
+        }
+
+        $img = $request->file('image');
+
+        if($img){
+            $imgName = time().'.'.$img->extension();
+            $img->move(public_path('images'),$imgName);
+        }
+        else{
+            $imgName = Post::where('id',$id)->first()->image;
+
+        }
+
+        $data['post'] = Post::where('id',$id)->update([
+            'title' => $request->title,
+            'image' => $imgName,
+            'description' => $request->description
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Post updated successfully',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -101,6 +138,11 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Post::where('id',$id)->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Post deleted successfully'
+        ]);
     }
 }

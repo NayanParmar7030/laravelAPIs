@@ -24,4 +24,6 @@ Route::post('login',[AuthController::class,'login']);
 Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
 
 
-Route::get('allpost',[PostController::class, 'index']);
+
+// Route::get('allpost',[PostController::class, 'index']);
+Route::apiResource('post', PostController::class)->middleware('auth:sanctum');
