@@ -20,9 +20,10 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::post('signup',[AuthController::class,'signup']);
-Route::post('login',[AuthController::class,'login']);
-Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
+// Route::post('login',[AuthController::class,'login']);
+Route::post('login', [AuthController::class, 'login'])->name('login');
 
+Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
 
 
 // Route::get('allpost',[PostController::class, 'index']);

@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Auth\AuthenticationException;
 
 class Handler extends ExceptionHandler
 {
@@ -15,6 +16,14 @@ class Handler extends ExceptionHandler
     protected $dontReport = [
         //
     ];
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+{
+    return response()->json([
+        'status' => false,
+        'message' => 'Unauthorized: Invalid or missing Bearer token'
+    ], 401);
+}
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
